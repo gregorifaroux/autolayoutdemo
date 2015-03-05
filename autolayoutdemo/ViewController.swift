@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     
-    var view_constraint_V:NSArray = [];
+    var view_constraint_V:NSArray = [NSLayoutConstraint]();
     var originalValue:CGFloat = 0.0;
     var offsetValue:CGFloat = -200;
 
@@ -27,19 +27,18 @@ class ViewController: UIViewController {
         bottomView.setTranslatesAutoresizingMaskIntoConstraints(false)
         bottomView.backgroundColor = UIColor.lightGrayColor()
         
-        self.view.addSubview(topView);
-        self.view.addSubview(bottomView);
-        
-        let button   = UIButton.buttonWithType(UIButtonType.System) as UIButton
-        button.frame = CGRectMake(100, 100, 100, 50)
-        button.backgroundColor = UIColor.whiteColor()
+        let button   = UIButton()
+        button.backgroundColor = UIColor.darkGrayColor()
         button.setTitle("Click me!", forState: UIControlState.Normal)
         button.addTarget(self, action: "buttonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+        button.setTranslatesAutoresizingMaskIntoConstraints(false)
         
+        self.view.addSubview(topView);
+        self.view.addSubview(bottomView);
         bottomView.addSubview(button)
         
         // constraints
-        let viewsDictionary = ["top":topView,"bottom":bottomView]
+        let viewsDictionary = ["top":topView,"bottom":bottomView, "button":button]
         
         //position constraints
         let view_constraint_H:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("H:|-10-[top]-10-|", options: NSLayoutFormatOptions(0), metrics: nil, views: viewsDictionary)
@@ -51,6 +50,13 @@ class ViewController: UIViewController {
         view.addConstraints(view_constraint_V)
         
         originalValue = (view_constraint_V[1] as NSLayoutConstraint).constant;
+        
+        // Position button
+         let control_constraint_H:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("H:|-30-[button]-30-|", options: NSLayoutFormatOptions(0), metrics: nil, views: viewsDictionary)
+        let control_constraint_V:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[button(50)]", options: NSLayoutFormatOptions(0), metrics: nil, views: viewsDictionary)
+ 
+        bottomView.addConstraints(control_constraint_H)
+        bottomView.addConstraints(control_constraint_V)
 
     }
     
@@ -59,7 +65,7 @@ class ViewController: UIViewController {
     */
     func buttonAction(sender:UIButton!)
     {
-        if ((view_constraint_V[1] as NSLayoutConstraint).constant == offsetValue) {
+        if (view_constraint_V[1].constant == offsetValue) {
             (view_constraint_V[1] as NSLayoutConstraint).constant = originalValue
         } else {
             (view_constraint_V[1] as NSLayoutConstraint).constant = offsetValue
